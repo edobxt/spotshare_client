@@ -1,5 +1,9 @@
-import { jomhuria, jomolhari } from "./config/fonts";
+'use client'
+
+import { jomhuria, jomolhari } from "@/config/fonts";
 import { Button } from "@/components/ui/button";
+
+
 
 export default function Home() {
   return (
@@ -10,7 +14,7 @@ export default function Home() {
         Vos endroits secrets deviennet des souvenirs partagés.
       </p>
 
-      <Button className={jomolhari.className + " home__button"} variant="secondary">Démarrer l&apos;expérience</Button>
+      <Button className={jomolhari.className + " home__button"} variant="secondary" onClick={() => console.log("Test")}>Démarrer l&apos;expérience</Button>
 
     </main>
   );
