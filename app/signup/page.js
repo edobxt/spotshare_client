@@ -89,6 +89,8 @@ export default function Signup() {
 
     return (
         <div id="signup" className="page">
+            <div className="home__circle top"></div>
+
             <div>
                 <h1 className={jomhuria.className + " signup__main-title main-title"}>SpotShare</h1>
                 <p className={jomolhari.className + " signup__sub-title sub-title"}>

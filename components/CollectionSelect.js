@@ -15,37 +15,17 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useState } from "react"
+import { useGlobalContext } from "@/config/GlobalContext"
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
+export default function CollectionSelect({ setCollection }) {
 
-export default function CollectionSelect({collections}) {
+    const {collections} = useGlobalContext()
 
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
 
     return (
-        <Popover open={open} onOpenChange={setOpen} style={{width: "100%"}}>
+        <Popover open={open} onOpenChange={setOpen} style={{ width: "100%" }}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
@@ -71,7 +51,7 @@ export default function CollectionSelect({collections}) {
                                 onSelect={(currentValue) => {
                                     setValue(collection.id)
                                     setOpen(false)
-                                    console.log(collection.name)
+                                    setCollection(collection.id)
                                 }}
                             >
                                 <Check

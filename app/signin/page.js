@@ -79,6 +79,8 @@ export default function Signin() {
 
     return (
         <div id="signin" className="page">
+            <div className="home__circle top"></div>
+
             <div>
                 <h1 className={jomhuria.className + " signin__main-title main-title"}>SpotShare</h1>
                 <p className={jomolhari.className + " signin__sub-title sub-title"}>

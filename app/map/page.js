@@ -2,7 +2,7 @@
 
 import map_marker from "@/public/map_marker.png";
 import { jomhuria, jomolhari } from "@/config/fonts";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet"
 import { useMapEvents } from "react-leaflet";
@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 
 import { spotshare_api_url } from "@/config/api";
 import { MyGlobalContext } from "@/config/GlobalContext";
+import CollectionName from "@/components/CollectionName";
 
 
 const LocationFinderDummy = ({ setOpen, setLatLng }) => {
@@ -34,10 +35,13 @@ export default function Map() {
     const [infosOpen, setInfosOpen] = useState(false);
     const [latlng, setLatLng] = useState({})
     const [user, setUser] = useState(null)
-    
+
     const [collections, setCollections] = useState([]);
     const [publicCollections, setPublicCollections] = useState([])
+
     const [selectedCollection, setSelectedCollection] = useState(1)
+    const [selectedCollectionData, setSelectedCollectionData] = useState({})
+
     const [markers, setMarkers] = useState([])
 
     const [selectedMarker, setSelectedMarker] = useState({})
@@ -74,6 +78,7 @@ export default function Map() {
     };
 
     const fetchMarkersFromCollection = async (collection_id) => {
+
         try {
             const response = await fetch(`${spotshare_api_url}/collections/${collection_id}/markers`);
 
@@ -82,7 +87,7 @@ export default function Map() {
             }
 
             const data = await response.json();
-            setMarkers(data.data); 
+            setMarkers(data.data);
         } catch (error) {
             console.error("Erreur lors du chargement des marqueurs:", error);
         }
@@ -91,7 +96,7 @@ export default function Map() {
     useEffect(() => {
         // Récupération et mise à jour des informations de l'utilisateur depuis localStorage
         const userInfoString = localStorage.getItem('userInfo');
-        
+
         if (userInfoString) {
             const userInfo = JSON.parse(userInfoString);
             setUser(userInfo); // Mise à jour de l'état avec les informations de l'utilisateur
@@ -104,12 +109,13 @@ export default function Map() {
             }
         } else {
             setIsLoading(false); // Si pas d'informations utilisateur, on arrête le chargement ici
+            router.push("/signin")
         }
 
         // Chargement des collections publiques indépendamment des informations utilisateur
         fetchPublicCollections();
         fetchMarkersFromCollection(selectedCollection);
-    }, [selectedCollection]);
+    }, [selectedCollection, router]);
 
     if (isLoading) {
         return <Loading />;
@@ -141,28 +147,34 @@ export default function Map() {
                 <AddMarkerForm open={open} setOpen={setOpen} latlng={latlng} style={{ zIndex: "1000" }} />
                 <UpdateMarkerForm open={infosOpen} setOpen={setInfosOpen} style={{ zIndex: "1000" }} />
 
-                <MapContainer center={position} zoom={11} style={{ height: '100%', width: '80%', zIndex: "1" }}>
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-                    />
-                    <LocationFinderDummy setOpen={setOpen} setLatLng={setLatLng} />
-                    
-                    {
-                        markers.map((marker, index) => (
-                            <Marker
-                            key={index}
-                            position={[marker.latitude, marker.longitude]} icon={bddIcon}
-                            eventHandlers={{
-                                click: (e) => {
-                                    setInfosOpen(true)
-                                    setSelectedMarker(marker)
-                                },
-                            }}>
-                            </Marker> 
-                        ))
-                    }
-                </MapContainer>
+                <div className="map_container">
+
+                    <CollectionName />
+
+                    <MapContainer center={position} zoom={11} zoomControl={false} style={{ height: '100%', width: '100%', zIndex: "1" }}>
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                        />
+                        <ZoomControl position="bottomleft" />
+                        <LocationFinderDummy setOpen={setOpen} setLatLng={setLatLng} />
+
+                        {
+                            markers.map((marker, index) => (
+                                <Marker
+                                    key={index}
+                                    position={[marker.latitude, marker.longitude]} icon={bddIcon}
+                                    eventHandlers={{
+                                        click: (e) => {
+                                            setInfosOpen(true)
+                                            setSelectedMarker(marker)
+                                        },
+                                    }}>
+                                </Marker>
+                            ))
+                        }
+                    </MapContainer>
+                </div>
             </MyGlobalContext.Provider>
         </div>
     )

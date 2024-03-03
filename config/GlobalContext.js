@@ -10,7 +10,7 @@ export const MyGlobalContext = createContext({
     fetchUserCollections: () => {},
     selectedCollection: 1,
     selectedMarker: {},
-    setSelectedMarker: () => {}
+    setSelectedMarker: () => {},
 })
 
 export const useGlobalContext = () => useContext(MyGlobalContext)
