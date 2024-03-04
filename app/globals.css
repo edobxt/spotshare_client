@@ -136,7 +136,7 @@
   border-radius: 892px;
   background: #FA9797;
   filter: blur(350px);
-  position: absolute;
+  position: fixed;
   margin: 0 auto;
 }
 
